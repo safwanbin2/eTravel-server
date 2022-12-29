@@ -41,6 +41,8 @@ run();
 
 // collections
 const UsersCollection = client.db('eTravel').collection('users');
+const PostsCollection = client.db('eTravel').collection('posts');
+const CategoriesCollection = client.db('eTravel').collection('categories');
 
 app.get('/', (req, res) => {
     res.send("eTravel server is running fine");
@@ -71,10 +73,58 @@ app.get('/jwt/:email', async (req, res) => {
         console.log(error);
     }
 })
-
-
-
-
+// posting a new post
+app.post('/posts', async (req, res) => {
+    try {
+        const newPost = req.body;
+        const result = await PostsCollection.insertOne(newPost);
+        res.send(result);
+    } catch (error) {
+        console.log(error)
+    }
+})
+// getting all the posts
+app.get('/posts', async (req, res) => {
+    try {
+        const filter = {};
+        const result = await PostsCollection.find(filter).toArray();
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+    }
+})
+// getting spedicific posts
+app.get('/posts/:email', async (req, res) => {
+    try {
+        const email = req.params.email;
+        const filter = { authorEmail: email };
+        const result = await PostsCollection.find(filter).toArray();
+        res.send(result.reverse());
+    } catch (error) {
+        console.log(error)
+    }
+})
+// getting all the district or categories
+app.get('/categories', async (req, res) => {
+    try {
+        const filter = {};
+        const result = await CategoriesCollection.find(filter).toArray();
+        res.send(result);
+    } catch (error) {
+        console.log(error)
+    }
+})
+// posts renderd by category
+app.get('/categoryposts/:title', async (req, res) => {
+    try {
+        const title = req.params.title;
+        const filter = { postCategory: title };
+        const result = await PostsCollection.find(filter).toArray();
+        res.send(result.reverse());
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 
 
