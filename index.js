@@ -43,6 +43,7 @@ run();
 const UsersCollection = client.db('eTravel').collection('users');
 const PostsCollection = client.db('eTravel').collection('posts');
 const CategoriesCollection = client.db('eTravel').collection('categories');
+const GuidesCollection = client.db('eTravel').collection('guides');
 
 app.get('/', (req, res) => {
     res.send("eTravel server is running fine");
@@ -88,7 +89,7 @@ app.get('/posts', async (req, res) => {
     try {
         const filter = {};
         const result = await PostsCollection.find(filter).toArray();
-        res.send(result);
+        res.send(result.reverse());
     } catch (error) {
         console.log(error);
     }
@@ -125,7 +126,17 @@ app.get('/categoryposts/:title', async (req, res) => {
         console.log(error)
     }
 })
-
+// getting area secific guide
+app.get('/guides/:category', async (req, res) => {
+    try {
+        const category = req.params.category;
+        const filter = { area: category };
+        const result = await GuidesCollection.find(filter).toArray();
+        res.send(result)
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 
 
